@@ -37,7 +37,6 @@ print("Number of safe reports: ", safelist)
 
 safelist2 = 0
 
-
 with open('2-1.txt', 'r') as file:
     for line in file:
         int_list2 = [int(x) for x in line.strip().split()]
@@ -45,40 +44,31 @@ with open('2-1.txt', 'r') as file:
         
         print("safelist2", safelist2)
         print(diff2)
-        print("check sign", check_sign(diff2))
-        print("check_range", check_range(diff2))
         
         sign = check_sign(diff2)
-        if sign == False:
-            print("attempting to fix check_sign...")
+        range_verdict = check_range(diff2)
+        print("check sign", sign)
+        print("check_range", range_verdict)
+
+
+        if sign == False or range_verdict == False:
+            print("attempting to fix issues...")
             list_length = len(diff2)
             for i in range(list_length):
                 new_list = diff2[:i] + diff2[i+1:]
                 print("new list", new_list)
                 sign = check_sign(new_list)
-                if sign == True:
-                    print("check sign true!")
-                    break
-                else:
-                    print("check sign still false, continuing...")
-                    continue
-            print("final check sign:", sign)
-        
-        range_verdict = check_range(diff2)
-        if range_verdict == False:
-            print("attempting to fix check_range...")
-            list_length = len(diff2)
-            for i in range(list_length):
-                new_list = diff2[:i] + diff2[i+1:]
-                print("new list", new_list)
                 range_verdict = check_range(new_list)
-                if range_verdict == True:
-                    print("check range true!")
+                
+                if sign and range_verdict == True:
+                    print("issue resolved!")
                     break
                 else:
-                    print("check sign still false, continuing...")
+                    print("Issues persist. Continuing on...")
                     continue
-            print("final check range:", range_verdict)
+            
+        print("final check sign:", sign)
+        print("final check range:", range_verdict)
 
         if sign and range_verdict == True:
             print("adding to safe list...")

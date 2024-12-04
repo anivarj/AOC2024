@@ -1,0 +1,33 @@
+
+### 1-1 ###
+import numpy as np
+
+#read text file into 2D array
+data = np.genfromtxt('1-1.txt').astype(int)
+
+#extract and sort cols
+col1 = np.sort(data[:,0])
+col2 = np.sort(data[:,1])
+
+#calculate the distances
+distances = np.abs(col1 - col2)
+print("The sum is: ", distances.sum())
+
+### 1-2 ###
+
+# get a list of col1 values that are in col2
+matches = np.intersect1d(col1, col2)
+
+# filter col2 to only the values of interest
+mask = np.isin(col2, matches)
+col2 = col2[mask]
+
+# create array of unique col2 values and their frequencies
+frequency_array = np.array(np.unique(col2, return_counts=True)).T
+
+# multiply the number by its frequency
+multiplied = frequency_array[:,0] * frequency_array[:,1]
+
+# print the sum of the products
+print("The product is: ", multiplied.sum())
+

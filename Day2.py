@@ -20,6 +20,7 @@ def check_sign(diff_list):
 def check_range(diff_list):
     return all( -3 <= x <= 3 for x in diff_list)
 
+# set problem dampener to true or false
 dampening = False
 
 safelist = 0
@@ -28,17 +29,20 @@ with open('2-1.txt', 'r') as file:
         int_list = [int(x) for x in line.strip().split()]
         diff = make_diff(int_list)
         
+        # if no problem dampener, do a hard compare and pass if both true
         if dampening == False:
             if check_sign(diff) and check_range(diff) == True:
                 safelist += 1
         
-        
+        # if problem dampener enabled, drop one number at a time and re-assess
         elif dampening == True:
             sign = check_sign(diff)
             range_verdict = check_range(diff)
 
             if sign == False or range_verdict == False:
                 list_length = len(int_list)
+                
+                # make a new list, dropping one value
                 for i in range(list_length):
                     new_list = int_list[:i] + int_list[i+1:]
                     new_diff = make_diff(new_list)
@@ -49,7 +53,8 @@ with open('2-1.txt', 'r') as file:
                         break
                     else:
                         continue
-
+            
+            # if problem is fixed, add a tally              
             if sign and range_verdict == True:
                 safelist += 1
      

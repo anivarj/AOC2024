@@ -20,6 +20,7 @@ def check_sign(diff_list):
 def check_range(diff_list):
     return all( -3 <= x <= 3 for x in diff_list)
 
+dampening = False
 
 safelist = 0
 with open('2-1.txt', 'r') as file:
@@ -27,54 +28,32 @@ with open('2-1.txt', 'r') as file:
         int_list = [int(x) for x in line.strip().split()]
         diff = make_diff(int_list)
         
-        if check_sign(diff) and check_range(diff) == True:
-            safelist += 1
-
-print("Number of safe reports: ", safelist)
-
-### 2-2 ###
-
-
-safelist2 = 0
-
-with open('2-1.txt', 'r') as file:
-    for line in file:
-        int_list2 = [int(x) for x in line.strip().split()]
-        diff2 = make_diff(int_list2)
+        if dampening == False:
+            if check_sign(diff) and check_range(diff) == True:
+                safelist += 1
         
-        print("safelist2", safelist2)
-        print(diff2)
         
-        sign = check_sign(diff2)
-        range_verdict = check_range(diff2)
-        print("check sign", sign)
-        print("check_range", range_verdict)
+        elif dampening == True:
+            sign = check_sign(diff)
+            range_verdict = check_range(diff)
+
+            if sign == False or range_verdict == False:
+                list_length = len(int_list)
+                for i in range(list_length):
+                    new_list = int_list[:i] + int_list[i+1:]
+                    new_diff = make_diff(new_list)
+                    sign = check_sign(new_diff)
+                    range_verdict = check_range(new_diff)
+
+                    if sign and range_verdict == True:
+                        break
+                    else:
+                        continue
+
+            if sign and range_verdict == True:
+                safelist += 1
+     
+    print("Dampening", dampening, ". Number of safe reports: ", safelist)
 
 
-        if sign == False or range_verdict == False:
-            print("attempting to fix issues...")
-            list_length = len(diff2)
-            for i in range(list_length):
-                new_list = diff2[:i] + diff2[i+1:]
-                print("new list", new_list)
-                sign = check_sign(new_list)
-                range_verdict = check_range(new_list)
-                
-                if sign and range_verdict == True:
-                    print("issue resolved!")
-                    break
-                else:
-                    print("Issues persist. Continuing on...")
-                    continue
-            
-        print("final check sign:", sign)
-        print("final check range:", range_verdict)
 
-        if sign and range_verdict == True:
-            print("adding to safe list...")
-            safelist2 += 1
-       
-        else:
-            print("nothing added to safelist2")
-
-print("Number of safe reports: ", safelist2)

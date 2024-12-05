@@ -15,23 +15,31 @@ with open('3-1.txt', 'r') as f:
 
     # part 2
     # find the first instance of don't() and get all instances of mul(num1, num2) before it
-    exp3 = re.compile(r'don\'t\(\)')
-    dont_index = exp3.search(data)
-    matches_before = exp.findall(data[:dont_index.start()])
-    tuples_before_dont = [(int(num1), int(num2)) for num1, num2 in matches_before]
-    products_before_dont = sum([num1*num2 for num1, num2 in tuples_before_dont])
+    first_chunk = re.split(r'don\'t\(\)', data)[0]
+    first_matches = exp.findall(first_chunk)
+
+    # find the last instance of do() and get all instances of mul(num1, num2) after it
+    end_chunk = re.split(r'do\(\)', data)[-1]
+    end_matches = exp.findall(end_chunk)
+
+    # combine the two lists of matches and calculate the sum of products
+    termini_matches = first_matches + end_matches
+    termini_matches = [(int(num1), int(num2)) for num1, num2 in termini_matches]
+    termini_products= sum([num1*num2 for num1, num2 in termini_matches])
     
     # find all do()don't() pairs and get the text between
-    exp2 = re.compile(r'do\(\)(.*?)don\'t\(\)')
-    blocks = exp2.findall(data)
+    do_dont = re.compile(r'do\(\)(.*?)don\'t\(\)')
+    dd_blocks = do_dont.findall(data)
 
-    matches2 = []
-    # for each do()don't() block, find all instances of mul(num1, num2)
-    for block in blocks:
-        matches2.extend(exp.findall(block))
+    dd_matches = []
     
-    tuples2 = [(int(num1), int(num2)) for num1, num2 in matches2]
-    products2 = sum([num1*num2 for num1, num2 in tuples2])
+    # for each do()don't() block, find all instances of mul(num1, num2)
+    for block in dd_blocks:
+        dd_matches.extend(exp.findall(block))
+    
+    # extract integers, multiply and sum
+    dd_tuples = [(int(num1), int(num2)) for num1, num2 in dd_matches]
+    dd_products = sum([num1*num2 for num1, num2 in dd_tuples])
 
-    print(products2 + products_before_dont)
+    print(dd_products + termini_products)
     

@@ -14,6 +14,22 @@ def is_valid_update(page_positions, relevant_rules):
             return False  # Rule violated
     return True
 
+
+# Custom comparator that uses relevant rules (which are changed in each iteration)
+def get_custom_comparator(relevant_rules):
+    # the custom comparator function
+    def custom_comparator(a, b):
+        # Match the relevant rule with the current pair of pages
+        for before, after in relevant_rules:
+            # If a comes before b, return -1
+            if before == a and after == b:
+                return -1  
+            # If b comes before a, return 1
+            elif before == b and after == a:
+                return 1  
+        return 0  # No rule defines the order
+    return custom_comparator
+
 with open('5-1.txt') as f:
     lines = [l.strip() for l in f.readlines()]
 
@@ -33,21 +49,6 @@ rules_set = set(rules)
 pages = [
     list(map(int, pages_pattern.search(line).group(1).split(','))) for line in lines if pages_pattern.search(line)
 ]
-
-# Custom comparator that uses relevant rules (which are changed in each iteration)
-def get_custom_comparator(relevant_rules):
-    # the custom comparator function
-    def custom_comparator(a, b):
-        # Match the relevant rule with the current pair of pages
-        for before, after in relevant_rules:
-            # If a comes before b, return -1
-            if before == a and after == b:
-                return -1  
-            # If b comes before a, return 1
-            elif before == b and after == a:
-                return 1  
-        return 0  # No rule defines the order
-    return custom_comparator
 
 # Part 1
 valid_middle_pages = []
